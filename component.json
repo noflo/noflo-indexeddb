@@ -1,0 +1,24 @@
+{
+  "name": "noflo-indexeddb",
+  "description": "IndexedDB components for NoFlo",
+  "author": "Henri Bergius <henri.bergius@iki.fi>",
+  "repo": "bergie/noflo-indexeddb",
+  "version": "0.1.0",
+  "keywords": [
+  ],
+  "dependencies": {
+    "noflo/noflo": "*"
+  },
+  "scripts": [
+    "components/Open.coffee",
+    "index.js"
+  ],
+  "json": [
+    "component.json"
+  ],
+  "noflo": {
+    "components": {
+      "Open": "components/Open.coffee"
+    }
+  }
+}
