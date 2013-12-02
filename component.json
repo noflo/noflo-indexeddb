@@ -14,6 +14,7 @@
     "components/Close.coffee",
     "components/Delete.coffee",
     "components/CreateStore.coffee",
+    "components/DeleteStore.coffee",
     "components/UpgradeRouter.coffee",
     "index.js"
   ],
@@ -26,6 +27,7 @@
       "Close": "components/Close.coffee",
       "Delete": "components/Delete.coffee",
       "CreateStore": "components/CreateStore.coffee",
+      "DeleteStore": "components/DeleteStore.coffee",
       "UpgradeRouter": "components/UpgradeRouter.coffee"
     }
   }

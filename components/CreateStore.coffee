@@ -37,8 +37,8 @@ class CreateStore extends noflo.Component
       @outPorts.store.disconnect()
     @db.transaction.onerror = null
     if @outPorts.db.isAttached()
-      @outPorts.store.send @db
-      @outPorts.store.disconnect()
+      @outPorts.db.send @db
+      @outPorts.db.disconnect()
     @db = null
     @name = null
 
