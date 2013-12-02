@@ -25,14 +25,16 @@ describe 'Open component', ->
     c.outPorts.db.attach db
     c.outPorts.error.attach error
   after ->
-    indexedDB.deleteDatabase 'indexeddb'
+    indexedDB.deleteDatabase 'opendb'
 
   describe 'on first openining', ->
     it 'should provide upgrade request', (done) ->
       upgrade.once 'data', (data) ->
         chai.expect(data).to.be.an 'object'
+        chai.expect(data.oldVersion).to.equal 0
+        chai.expect(data.db).to.be.an 'object'
         done()
-      name.send 'indexeddb'
+      name.send 'opendb'
       version.send 1
   describe 'on second opening', ->
     it 'should provide the DB', (done) ->
@@ -43,5 +45,5 @@ describe 'Open component', ->
         chai.expect(up).to.equal false
         chai.expect(data).to.be.an 'object'
         done()
-      name.send 'indexeddb'
+      name.send 'opendb'
       version.send 1
