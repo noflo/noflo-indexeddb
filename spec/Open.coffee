@@ -7,17 +7,41 @@ else
 
 describe 'Open component', ->
   c = null
-  ins = null
-  out = null
+  name = null
+  version = null
+  upgrade = null
+  db = null
+  error = null
   beforeEach ->
     c = Open.getComponent()
-    ins = noflo.internalSocket.createSocket()
-    out = noflo.internalSocket.createSocket()
-    c.inPorts.in.attach ins
-    c.outPorts.out.attach out
+    name = noflo.internalSocket.createSocket()
+    version = noflo.internalSocket.createSocket()
+    upgrade = noflo.internalSocket.createSocket()
+    db = noflo.internalSocket.createSocket()
+    error = noflo.internalSocket.createSocket()
+    c.inPorts.name.attach name
+    c.inPorts.version.attach version
+    c.outPorts.upgrade.attach upgrade
+    c.outPorts.db.attach db
+    c.outPorts.error.attach error
+  after ->
+    indexedDB.deleteDatabase 'indexeddb'
 
-  describe 'when instantiated', ->
-    it 'should have an input port', ->
-      chai.expect(c.inPorts.in).to.be.an 'object'
-    it 'should have an output port', ->
-      chai.expect(c.outPorts.out).to.be.an 'object'
+  describe 'on first openining', ->
+    it 'should provide upgrade request', (done) ->
+      upgrade.once 'data', (data) ->
+        chai.expect(data).to.be.an 'object'
+        done()
+      name.send 'indexeddb'
+      version.send 1
+  describe 'on second opening', ->
+    it 'should provide the DB', (done) ->
+      up = false
+      upgrade.once 'data', (data) ->
+        up = true
+      db.once 'data', (data) ->
+        chai.expect(up).to.equal false
+        chai.expect(data).to.be.an 'object'
+        done()
+      name.send 'indexeddb'
+      version.send 1
