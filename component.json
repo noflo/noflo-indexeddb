@@ -16,6 +16,7 @@
     "components/CreateStore.coffee",
     "components/DeleteStore.coffee",
     "components/UpgradeRouter.coffee",
+    "components/BeginTransaction.coffee",
     "index.js"
   ],
   "json": [
@@ -29,7 +30,8 @@
       "Delete": "components/Delete.coffee",
       "CreateStore": "components/CreateStore.coffee",
       "DeleteStore": "components/DeleteStore.coffee",
-      "UpgradeRouter": "components/UpgradeRouter.coffee"
+      "UpgradeRouter": "components/UpgradeRouter.coffee",
+      "BeginTransaction": "components/BeginTransaction.coffee"
     }
   }
 }
