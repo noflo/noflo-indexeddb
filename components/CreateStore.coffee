@@ -26,7 +26,7 @@ class CreateStore extends noflo.Component
 
   create: ->
     return unless @name and @db
-    @db.onerror = @error
+    @db.transaction.onerror = @error
     store = @db.createObjectStore @name,
       keyPath: @keyPath
       autoIncrement: @autoIncrement
@@ -35,7 +35,7 @@ class CreateStore extends noflo.Component
       @outPorts.store.send store
       @outPorts.store.endGroup()
       @outPorts.store.disconnect()
-    @db.onerror = null
+    @db.transaction.onerror = null
     if @outPorts.db.isAttached()
       @outPorts.store.send @db
       @outPorts.store.disconnect()
