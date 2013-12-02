@@ -18,14 +18,14 @@ class CreateIndex extends noflo.Component
       store: new noflo.Port 'object'
       error: new noflo.Port 'object'
 
-    @inPorts.store.on.data (@store) =>
+    @inPorts.store.on 'data', (@store) =>
       do @create
-    @inPorts.name.on.data (@name) =>
+    @inPorts.name.on 'data', (@name) =>
       do @create
-    @inPorts.keypath.on.data (@keyPath) =>
+    @inPorts.keypath.on 'data', (@keyPath) =>
       do @create
-    @inPorts.unique.on.data (@unique) =>
-    @inPorts.multientry.on.data (@multiEntry) =>
+    @inPorts.unique.on 'data', (@unique) =>
+    @inPorts.multientry.on 'data', (@multiEntry) =>
 
   create: ->
     return unless @store and @name and @keyPath

@@ -19,7 +19,7 @@ class UpgradeRouter extends noflo.Component
       @groups = []
 
   route: (upgrade) ->
-    if @outPorts.isAttached upgrade.oldVersion
+    if @outPorts.versions.isAttached upgrade.oldVersion
       @outPorts.versions.beginGroup group for group in @groups
       @outPorts.versions.send upgrade.db
       @outPorts.versions.endGroup() for group in @groups

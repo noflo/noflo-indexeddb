@@ -8,7 +8,7 @@ class DeleteDatabase extends noflo.Component
       deleted: new noflo.Port 'bang'
       error: new noflo.Port 'object'
 
-    @inPorts.name.on 'data', (name) ->
+    @inPorts.name.on 'data', (name) =>
       @deleteDb name
 
   deleteDb: (name) ->

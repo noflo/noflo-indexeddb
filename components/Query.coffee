@@ -14,11 +14,11 @@ class Query extends noflo.Component
       item: new noflo.Port 'all'
       error: new noflo.Port 'object'
 
-    @inPorts.store.on 'data', (@store) ->
+    @inPorts.store.on 'data', (@store) =>
       do @query
-    @inPorts.range.on 'data', (@range) ->
+    @inPorts.range.on 'data', (@range) =>
       do @query
-    @inPorts.all.on 'data', ->
+    @inPorts.all.on 'data', =>
       @all = true
       do @query
 

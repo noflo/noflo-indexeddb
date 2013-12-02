@@ -13,9 +13,9 @@ class GetStore extends noflo.Component
       transaction: new noflo.Port 'object'
       error: new noflo.Port 'object'
 
-    @inPorts.name.on 'data', (@name) ->
+    @inPorts.name.on 'data', (@name) =>
       do @get
-    @inPorts.transaction.on 'data', (@transaction) ->
+    @inPorts.transaction.on 'data', (@transaction) =>
       do @get
 
   get: ->
