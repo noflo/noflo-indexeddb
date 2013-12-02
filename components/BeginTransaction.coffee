@@ -28,9 +28,9 @@ class BeginTransaction extends noflo.Component
     transaction.oncomplete = =>
       transaction.onerror = null
       transaction.oncomplete = null
-      @outPorts.transaction.send transaction
-      @outPorts.transaction.disconnect()
     transaction.onerror = @error
+    @outPorts.transaction.send transaction
+    @outPorts.transaction.disconnect()
 
     if @outPorts.db.isAttached()
       @outPorts.db.send @db

@@ -29,6 +29,7 @@ class Put extends noflo.Component
       if @outPorts.store.isAttached()
         @outPorts.store.send @store
         @outPorts.store.disconnect()
+      @store = null
     req.onerror = @error
 
 exports.getComponent = -> new Put

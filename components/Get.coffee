@@ -30,6 +30,7 @@ class Get extends noflo.Component
         @outPorts.store.send @store
         @outPorts.store.disconnect()
       @key = null
+      @store = null
     req.onerror = @error
 
 exports.getComponent = -> new Get
