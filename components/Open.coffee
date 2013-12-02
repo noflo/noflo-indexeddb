@@ -23,12 +23,16 @@ class Open extends noflo.Component
     @name = null
     @version = null
     req.onupgradeneeded = (e) =>
+      @outPorts.upgrade.beginGroup @name
       @outPorts.upgrade.send
         oldVersion: e.oldVersion
         db: e.target.result
+      @outPorts.upgrade.endGroup()
       @outPorts.upgrade.disconnect()
     req.onsuccess = (e) =>
+      @outPorts.db.beginGroup @name
       @outPorts.db.send e.target.result
+      @outPorts.db.endGroup()
       @outPorts.db.disconnect()
     req.onerror = @error
 

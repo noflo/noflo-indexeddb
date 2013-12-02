@@ -11,6 +11,8 @@
   },
   "scripts": [
     "components/Open.coffee",
+    "components/CreateStore.coffee",
+    "components/UpgradeRouter.coffee",
     "index.js"
   ],
   "json": [
@@ -18,7 +20,9 @@
   ],
   "noflo": {
     "components": {
-      "Open": "components/Open.coffee"
+      "Open": "components/Open.coffee",
+      "CreateStore": "components/CreateStore.coffee",
+      "UpgradeRouter": "components/UpgradeRouter.coffee"
     }
   }
 }

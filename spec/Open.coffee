@@ -1,9 +1,5 @@
 noflo = require 'noflo'
-unless noflo.isBrowser()
-  chai = require 'chai' unless chai
-  Open = require '../components/Open.coffee'
-else
-  Open = require 'noflo-indexeddb/components/Open.js'
+Open = require 'noflo-indexeddb/components/Open.js'
 
 describe 'Open component', ->
   c = null
