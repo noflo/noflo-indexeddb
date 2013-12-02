@@ -20,6 +20,8 @@ class Open extends noflo.Component
   open: ->
     return unless @name and @version
     req = indexedDB.open @name, @version
+    @name = null
+    @version = null
     req.onupgradeneeded = (e) =>
       @outPorts.upgrade.send e.target.result
       @outPorts.upgrade.disconnect()
