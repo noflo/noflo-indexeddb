@@ -1,6 +1,6 @@
 noflo = require 'noflo'
 
-class Delete extends noflo.Component
+class Get extends noflo.Component
   constructor: ->
     @store = null
     @key = null
@@ -10,6 +10,7 @@ class Delete extends noflo.Component
       key: new noflo.Port 'string'
     @outPorts =
       store: new noflo.Port 'object'
+      item: new noflo.Port 'all'
       error: new noflo.Port 'object'
 
     @inPorts.store.on 'data', (@store) =>
@@ -19,12 +20,16 @@ class Delete extends noflo.Component
 
   get: ->
     return unless @store and @key
-    req = @store.delete @key
+    req = @store.get @key
     req.onsuccess = (e) =>
+      @outPorts.item.beginGroup @key
+      @outPorts.item.send e.target.result
+      @outPorts.item.endGroup()
+      @outPorts.item.disconnect()
       if @outPorts.store.isAttached()
         @outPorts.store.send @store
         @outPorts.store.disconnect()
       @key = null
     req.onerror = @error
 
-exports.getComponent = -> new Delete
+exports.getComponent = -> new Get
