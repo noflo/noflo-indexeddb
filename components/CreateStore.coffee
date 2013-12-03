@@ -30,7 +30,7 @@ class CreateStore extends noflo.Component
     store = @db.createObjectStore @name,
       keyPath: @keyPath
       autoIncrement: @autoIncrement
-    if store
+    if store and @outPorts.store.isAttached()
       @outPorts.store.beginGroup @name
       @outPorts.store.send store
       @outPorts.store.endGroup()
