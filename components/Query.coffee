@@ -12,6 +12,7 @@ class Query extends noflo.Component
       all: new noflo.Port 'bang'
     @outPorts =
       item: new noflo.Port 'all'
+      range: new noflo.Port 'object'
       error: new noflo.Port 'object'
 
     @inPorts.store.on 'data', (@store) =>
@@ -32,7 +33,12 @@ class Query extends noflo.Component
       return
     if @range
       req = @store.openCursor @range
+      if @outPorts.range.isAttached()
+        @outPorts.range.send @range
+        @outPorts.range.disconnect()
       @range = null
+      req.onsuccess = @step
+      req.onerror = @error
 
   step: (e) =>
     cursor = e.target.result

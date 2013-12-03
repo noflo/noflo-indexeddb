@@ -36,6 +36,6 @@ class Open extends noflo.Component
       @outPorts.db.send e.target.result
       @outPorts.db.endGroup()
       @outPorts.db.disconnect()
-    req.onerror = @error
+    req.onerror = @error.bind @
 
 exports.getComponent = -> new Open

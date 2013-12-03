@@ -28,7 +28,7 @@ class BeginTransaction extends noflo.Component
     transaction.oncomplete = =>
       transaction.onerror = null
       transaction.oncomplete = null
-    transaction.onerror = @error
+    transaction.onerror = @error.bind @
     @outPorts.transaction.send transaction
     @outPorts.transaction.disconnect()
 

@@ -29,7 +29,7 @@ class CreateIndex extends noflo.Component
 
   create: ->
     return unless @store and @name and @keyPath
-    @store.onerror = @error
+    @store.onerror = @error.bind @
     index = @store.createIndex @name, @keyPath,
       unique: @unique
       multiEntry: @multiEntry

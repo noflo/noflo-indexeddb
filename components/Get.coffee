@@ -21,16 +21,16 @@ class Get extends noflo.Component
   get: ->
     return unless @store and @key
     req = @store.get @key
+    if @outPorts.store.isAttached()
+      @outPorts.store.send @store
+      @outPorts.store.disconnect()
+    @store = null
     req.onsuccess = (e) =>
       @outPorts.item.beginGroup @key
       @outPorts.item.send e.target.result
       @outPorts.item.endGroup()
       @outPorts.item.disconnect()
-      if @outPorts.store.isAttached()
-        @outPorts.store.send @store
-        @outPorts.store.disconnect()
       @key = null
-      @store = null
-    req.onerror = @error
+    req.onerror = @error.bind @
 
 exports.getComponent = -> new Get

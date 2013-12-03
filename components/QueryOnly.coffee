@@ -8,7 +8,7 @@ class QueryOnly extends noflo.Component
       range: new noflo.Port 'object'
 
     @inPorts.value.on 'data', (value) =>
-      @outPorts.out.send IDBKeyRange.only value
-      @outPorts.out.disconnect()
+      @outPorts.range.send IDBKeyRange.only value
+      @outPorts.range.disconnect()
 
 exports.getComponent = -> new QueryOnly

@@ -10,8 +10,8 @@ class QueryTo extends noflo.Component
       range: new noflo.Port 'object'
 
     @inPorts.value.on 'data', (value) =>
-      @outPorts.out.send IDBKeyRange.upperBound value, @including
-      @outPorts.out.disconnect()
+      @outPorts.range.send IDBKeyRange.upperBound value, @including
+      @outPorts.range.disconnect()
     @inPorts.including.on 'data', (@including) =>
 
 exports.getComponent = -> new QueryTo

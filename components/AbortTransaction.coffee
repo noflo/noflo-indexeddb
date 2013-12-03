@@ -8,7 +8,7 @@ class AbortTransaction extends noflo.Component
       error: new noflo.Port 'object'
 
     @inPorts.transaction.on 'data', (transaction) =>
-      transaction.onerror = @error
+      transaction.onerror = @error.bind @
       transaction.abort()
 
 exports.getComponent = -> new AbortTransaction
