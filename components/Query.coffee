@@ -27,12 +27,14 @@ class Query extends noflo.Component
     return unless @store
     if @all
       req = @store.openCursor()
+      @store = null
       @all = false
       req.onsuccess = @step
       req.onerror = @error
       return
     if @range
       req = @store.openCursor @range
+      @store = null
       if @outPorts.range.isAttached()
         @outPorts.range.send @range
         @outPorts.range.disconnect()
