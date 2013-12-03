@@ -21,11 +21,13 @@ class Open extends noflo.Component
     return unless @name and @version
     req = indexedDB.open @name, @version
     @name = null
+    version = @version
     @version = null
     req.onupgradeneeded = (e) =>
       @outPorts.upgrade.beginGroup @name
       @outPorts.upgrade.send
         oldVersion: e.oldVersion
+        newVersion: version
         db: e.target.result
       @outPorts.upgrade.endGroup()
       @outPorts.upgrade.disconnect()
