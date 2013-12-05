@@ -33,6 +33,9 @@
   "json": [
     "component.json"
   ],
+  "files": [
+    "vendor/IndexedDBShim.min.js"
+  ],
   "noflo": {
     "icon": "bitbucket",
     "components": {
