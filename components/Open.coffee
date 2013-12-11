@@ -19,7 +19,7 @@ class Open extends noflo.Component
 
   open: ->
     return unless @name and @version
-    req = indexedDB.open @name, @version
+    req = indexedDB.open @name, parseInt @version
     @name = null
     version = @version
     @version = null
