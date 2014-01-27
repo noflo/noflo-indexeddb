@@ -14,6 +14,7 @@ class BeginTransaction extends noflo.Component
       transaction: new noflo.Port 'object'
       db: new noflo.Port 'object'
       error: new noflo.Port 'error'
+      complete: new noflo.Port 'bang'
 
     @inPorts.stores.on 'data', (data) =>
       @stores = data.split ','
@@ -26,6 +27,9 @@ class BeginTransaction extends noflo.Component
     return unless @db and @stores
     transaction = @db.transaction @stores, @mode
     transaction.oncomplete = =>
+      if @outPorts.complete.isAttached()
+        @outPorts.complete.send true
+        @outPorts.complete.disconnect()
       transaction.onerror = null
       transaction.oncomplete = null
     transaction.onerror = @error.bind @
