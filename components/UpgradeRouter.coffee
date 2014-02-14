@@ -19,14 +19,19 @@ class UpgradeRouter extends noflo.Component
       @groups = []
 
   route: (upgrade) ->
-    migration = upgrade.oldVersion
     upgraded = false
+    migration = 0
     while migration < upgrade.newVersion
-      continue unless @outPorts.versions.isAttached migration
-      @outPorts.versions.beginGroup group for group in @groups
-      @outPorts.versions.send upgrade.db
-      @outPorts.versions.endGroup() for group in @groups
-      @outPorts.versions.disconnect()
+      if migration < upgrade.oldVersion
+        migration++
+        continue
+      unless @outPorts.versions.isAttached migration
+        migration++
+        continue
+      @outPorts.versions.beginGroup group, migration for group in @groups
+      @outPorts.versions.send upgrade.db, migration
+      @outPorts.versions.endGroup migration for group in @groups
+      @outPorts.versions.disconnect migration
       upgraded = true
       migration++
     return if upgraded
