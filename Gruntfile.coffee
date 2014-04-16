@@ -108,6 +108,10 @@ module.exports = ->
   @loadNpmTasks 'grunt-mocha-phantomjs'
   @loadNpmTasks 'grunt-coffeelint'
 
+  # Grunt plugins used for browser testing
+  @loadNpmTasks 'grunt-contrib-connect'
+  @loadNpmTasks 'grunt-saucelabs'
+
   # Our local tasks
   @registerTask 'build', 'Build NoFlo for the chosen target platform', (target = 'all') =>
     @task.run 'coffee'
