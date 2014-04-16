@@ -38,8 +38,11 @@ module.exports = ->
         input: 'browser/noflo-indexeddb.js'
         output: 'browser/noflo-indexeddb.js'
         tokens: [
-          token: '.coffee'
-          string: '.js'
+          token: '.coffee"'
+          string: '.js"'
+        ,
+          token: ".coffee'"
+          string: ".js'"
         ]
 
     # JavaScript minification for the browser
