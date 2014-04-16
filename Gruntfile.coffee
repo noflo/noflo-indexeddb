@@ -59,9 +59,39 @@ module.exports = ->
     mocha_phantomjs:
       options:
         output: 'spec/result.xml'
-        reporter: 'dot'
+        reporter: 'spec'
       all: ['spec/runner.html']
 
+    # Cross-browser testing
+    connect:
+      server:
+        options:
+          base: ''
+          port: 9999
+
+    'saucelabs-mocha':
+      all:
+        options:
+          urls: ['http://127.0.0.1:9999/spec/runner.html']
+          browsers: [
+              browserName: 'chrome'
+            #,
+            #browserName: 'firefox'
+            ,
+              browserName: 'safari'
+              platform: 'OS X 10.8'
+              version: '6'
+            ,
+              browserName: 'opera'
+            ,
+              browserName: 'internet explorer'
+              platform: 'WIN8'
+              version: '11'
+          ]
+          build: process.env.TRAVIS_JOB_ID
+          testname: 'noflo-indexeddb browser tests'
+          tunnelTimeout: 5
+          concurrency: 3
     # Coding standards
     coffeelint:
       components: ['components/*.coffee']
@@ -95,3 +125,4 @@ module.exports = ->
     @task.run 'mocha_phantomjs'
 
   @registerTask 'default', ['test']
+  @registerTask 'crossbrowser', 'Run tests on real browsers', ['coffeelint', 'build', 'connect', 'saucelabs-mocha']
