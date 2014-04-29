@@ -91,8 +91,6 @@ module.exports = ->
               platform: 'OS X 10.8'
               version: '6'
             ,
-              browserName: 'opera'
-            ,
               browserName: 'internet explorer'
               version: '11'
           ]

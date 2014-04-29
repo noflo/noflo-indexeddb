@@ -6,14 +6,17 @@ describe 'CreateStore component', ->
   name = null
   db = null
   store = null
+  keypath = null
   dbName = 'createstore'
   beforeEach ->
     c = CreateStore.getComponent()
     name = noflo.internalSocket.createSocket()
     db = noflo.internalSocket.createSocket()
     store = noflo.internalSocket.createSocket()
+    keypath = noflo.internalSocket.createSocket()
     c.inPorts.name.attach name
     c.inPorts.db.attach db
+    c.inPorts.keypath.attach keypath
     c.outPorts.store.attach store
   after (done) ->
     req = indexedDB.deleteDatabase dbName
@@ -27,6 +30,7 @@ describe 'CreateStore component', ->
       store.on 'disconnect', ->
         dbInstance.close()
         done()
+      keypath.send 'foo'
       name.send 'items'
       req = indexedDB.open dbName, 1
       req.onupgradeneeded = (e) ->
