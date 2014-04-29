@@ -86,10 +86,6 @@ module.exports = ->
               browserName: 'googlechrome'
               version: '34'
             ,
-              browserName: 'firefox',
-              platform: 'Windows 8.1',
-              version: '28'
-            ,
               browserName: 'safari'
               platform: 'OS X 10.8'
               version: '6'
