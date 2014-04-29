@@ -1,5 +1,7 @@
 noflo = require 'noflo'
 
+# @name GetStore
+
 class GetStore extends noflo.Component
   constructor: ->
     @transaction = null

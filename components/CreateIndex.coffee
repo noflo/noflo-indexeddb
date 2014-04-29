@@ -1,5 +1,7 @@
 noflo = require 'noflo'
 
+# @name CreateIndex
+
 class CreateIndex extends noflo.Component
   constructor: ->
     @store = null

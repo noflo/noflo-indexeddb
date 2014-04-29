@@ -4,8 +4,7 @@
   "author": "Henri Bergius <henri.bergius@iki.fi>",
   "repo": "noflo/noflo-indexeddb",
   "version": "0.1.0",
-  "keywords": [
-  ],
+  "keywords": [],
   "dependencies": {
     "noflo/noflo": "*"
   },
@@ -42,24 +41,24 @@
   "noflo": {
     "icon": "bitbucket",
     "components": {
-      "Open": "components/Open.coffee",
-      "Close": "components/Close.coffee",
-      "DeleteDatabase": "components/DeleteDatabase.coffee",
-      "CreateStore": "components/CreateStore.coffee",
-      "CreateIndex": "components/CreateIndex.coffee",
-      "DeleteStore": "components/DeleteStore.coffee",
-      "UpgradeRouter": "components/UpgradeRouter.coffee",
-      "BeginTransaction": "components/BeginTransaction.coffee",
       "AbortTransaction": "components/AbortTransaction.coffee",
-      "GetStore": "components/GetStore.coffee",
-      "GetIndex": "components/GetIndex.coffee",
-      "Query": "components/Query.coffee",
-      "QueryOnly": "components/QueryOnly.coffee",
-      "QueryFrom": "components/QueryFrom.coffee",
-      "QueryTo": "components/QueryTo.coffee",
-      "Put": "components/Put.coffee",
+      "BeginTransaction": "components/BeginTransaction.coffee",
+      "Close": "components/Close.coffee",
+      "CreateIndex": "components/CreateIndex.coffee",
+      "CreateStore": "components/CreateStore.coffee",
+      "Delete": "components/Delete.coffee",
+      "DeleteDatabase": "components/DeleteDatabase.coffee",
+      "DeleteStore": "components/DeleteStore.coffee",
       "Get": "components/Get.coffee",
-      "Delete": "components/Delete.coffee"
+      "GetIndex": "components/GetIndex.coffee",
+      "GetStore": "components/GetStore.coffee",
+      "Open": "components/Open.coffee",
+      "Put": "components/Put.coffee",
+      "Query": "components/Query.coffee",
+      "QueryFrom": "components/QueryFrom.coffee",
+      "QueryOnly": "components/QueryOnly.coffee",
+      "QueryTo": "components/QueryTo.coffee",
+      "UpgradeRouter": "components/UpgradeRouter.coffee"
     }
   }
 }

@@ -1,5 +1,7 @@
 noflo = require 'noflo'
 
+# @name Open
+
 class Open extends noflo.Component
   constructor: ->
     @name = null

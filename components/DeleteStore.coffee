@@ -1,5 +1,7 @@
 noflo = require 'noflo'
 
+# @name DeleteStore
+
 class DeleteStore extends noflo.Component
   constructor: ->
     @name = null
