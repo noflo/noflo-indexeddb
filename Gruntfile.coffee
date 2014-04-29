@@ -131,4 +131,4 @@ module.exports = ->
     @task.run 'mocha_phantomjs'
 
   @registerTask 'default', ['test']
-  @registerTask 'crossbrowser', 'Run tests on real browsers', ['coffeelint', 'build', 'connect', 'saucelabs-mocha']
+  @registerTask 'crossbrowser', 'Run tests on real browsers', ['coffeelint', 'build', 'connect', 'mocha_phantomjs', 'saucelabs-mocha']
