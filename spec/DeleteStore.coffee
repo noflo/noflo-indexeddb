@@ -15,11 +15,13 @@ describe 'DeleteStore component', ->
     c.inPorts.name.attach name
     c.inPorts.db.attach db
     c.outPorts.db.attach outDb
-  after ->
-    indexedDB.deleteDatabase dbName
+  after (done) ->
+    req = indexedDB.deleteDatabase dbName
+    req.onsuccess = -> done()
 
   describe 'on upgrade request', ->
     it 'should be able to delete an object store', (done) ->
+      dbInstance = null
       outDb.on 'data', (data) ->
         chai.expect(data).to.be.an 'object'
         chai.expect(data.objectStoreNames.contains('items')).to.equal false
@@ -28,4 +30,6 @@ describe 'DeleteStore component', ->
       req = indexedDB.open dbName, 1
       req.onupgradeneeded = (e) ->
         e.target.result.createObjectStore 'items'
-        db.send e.target.result
+      req.onsuccess = (e) ->
+        dbInstance = e.target.result
+        db.send dbInstance

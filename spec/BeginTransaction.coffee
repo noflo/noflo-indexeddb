@@ -15,19 +15,22 @@ describe 'BeginTransaction component', ->
     c.inPorts.stores.attach stores
     c.inPorts.db.attach db
     c.outPorts.transaction.attach transaction
-  after ->
-    indexedDB.deleteDatabase dbName
+  after (done) ->
+    req = indexedDB.deleteDatabase dbName
+    req.onsuccess = -> done()
 
   describe 'on upgrade request', ->
     it 'should be able to begin transaction', (done) ->
+      dbInstance = null
       transaction.on 'data', (data) ->
         chai.expect(data).to.be.an 'object'
+        dbInstance.close()
         done()
       stores.send 'items,users'
       req = indexedDB.open dbName, 1
       req.onupgradeneeded = (e) ->
-        e.target.result.createObjectStore 'users'
         e.target.result.createObjectStore 'items'
+        e.target.result.createObjectStore 'users'
       req.onsuccess = (e) ->
-        db.send e.target.result
-
+        dbInstance = e.target.result
+        db.send dbInstance

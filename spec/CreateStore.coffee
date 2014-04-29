@@ -15,15 +15,20 @@ describe 'CreateStore component', ->
     c.inPorts.name.attach name
     c.inPorts.db.attach db
     c.outPorts.store.attach store
-  after ->
-    indexedDB.deleteDatabase dbName
+  after (done) ->
+    req = indexedDB.deleteDatabase dbName
+    req.onsuccess = -> done()
 
   describe 'on upgrade request', ->
     it 'should be able to create an object store', (done) ->
+      dbInstance = null
       store.on 'data', (data) ->
         chai.expect(data).to.be.an 'object'
+      store.on 'disconnect', ->
+        dbInstance.close()
         done()
       name.send 'items'
       req = indexedDB.open dbName, 1
       req.onupgradeneeded = (e) ->
-        db.send e.target.result
+        dbInstance = e.target.result
+        db.send dbInstance

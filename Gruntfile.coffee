@@ -88,7 +88,6 @@ module.exports = ->
               browserName: 'opera'
             ,
               browserName: 'internet explorer'
-              platform: 'WIN8'
               version: '11'
           ]
           build: process.env.TRAVIS_JOB_ID
