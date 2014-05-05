@@ -25,7 +25,10 @@ class BeginTransaction extends noflo.Component
 
   begin: ->
     return unless @db and @stores
-    transaction = @db.transaction @stores, @mode
+    try
+      transaction = @db.transaction @stores, @mode
+    catch e
+      return @error e
     transaction.oncomplete = =>
       if @outPorts.complete.isAttached()
         @outPorts.complete.send true
