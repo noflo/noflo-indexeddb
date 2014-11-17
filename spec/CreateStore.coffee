@@ -1,5 +1,6 @@
 noflo = require 'noflo'
 CreateStore = require 'noflo-indexeddb/components/CreateStore.js'
+iDB = require 'noflo-indexeddb/vendor/IndexedDB.js'
 
 describe 'CreateStore component', ->
   c = null
@@ -19,7 +20,7 @@ describe 'CreateStore component', ->
     c.inPorts.keypath.attach keypath
     c.outPorts.store.attach store
   after (done) ->
-    req = indexedDB.deleteDatabase dbName
+    req = iDB.deleteDatabase dbName
     req.onsuccess = -> done()
 
   describe 'on upgrade request', ->
@@ -32,7 +33,7 @@ describe 'CreateStore component', ->
         done()
       keypath.send 'foo'
       name.send 'items'
-      req = indexedDB.open dbName, 1
+      req = iDB.open dbName, 1
       req.onupgradeneeded = (e) ->
         dbInstance = e.target.result
         db.send dbInstance

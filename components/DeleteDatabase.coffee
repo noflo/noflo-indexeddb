@@ -1,4 +1,5 @@
 noflo = require 'noflo'
+indexedDB = require '../vendor/IndexedDB'
 
 class DeleteDatabase extends noflo.Component
   constructor: ->

@@ -1,5 +1,6 @@
 noflo = require 'noflo'
 BeginTransaction = require 'noflo-indexeddb/components/BeginTransaction.js'
+iDB = require 'noflo-indexeddb/vendor/IndexedDB.js'
 
 describe 'BeginTransaction component', ->
   c = null
@@ -16,7 +17,7 @@ describe 'BeginTransaction component', ->
     c.inPorts.db.attach db
     c.outPorts.transaction.attach transaction
   after (done) ->
-    req = indexedDB.deleteDatabase dbName
+    req = iDB.deleteDatabase dbName
     req.onsuccess = -> done()
 
   describe 'on upgrade request', ->
@@ -27,7 +28,7 @@ describe 'BeginTransaction component', ->
         dbInstance.close()
         done()
       stores.send 'items,users'
-      req = indexedDB.open dbName, 1
+      req = iDB.open dbName, 1
       req.onupgradeneeded = (e) ->
         e.target.result.createObjectStore 'items'
         e.target.result.createObjectStore 'users'
