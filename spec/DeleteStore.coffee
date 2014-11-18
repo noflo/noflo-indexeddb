@@ -1,5 +1,6 @@
 noflo = require 'noflo'
 DeleteStore = require 'noflo-indexeddb/components/DeleteStore.js'
+iDB = require 'noflo-indexeddb/vendor/IndexedDB.js'
 
 describe 'DeleteStore component', ->
   c = null
@@ -19,7 +20,7 @@ describe 'DeleteStore component', ->
     c.outPorts.db.attach outDb
     c.outPorts.error.attach err
   after (done) ->
-    req = indexedDB.deleteDatabase dbName
+    req = iDB.deleteDatabase dbName
     req.onsuccess = -> done()
 
   describe 'on upgrade request', ->
@@ -33,12 +34,12 @@ describe 'DeleteStore component', ->
         chai.expect(data).to.be.an 'object'
         chai.expect(data.objectStoreNames.contains('items')).to.equal false
       name.send 'items'
-      req = indexedDB.open dbName, 1
+      req = iDB.open dbName, 1
       req.onupgradeneeded = (e) ->
         e.target.result.createObjectStore 'items'
       req.onsuccess = (e) ->
         e.target.result.close()
-        req2 = indexedDB.open dbName, 2
+        req2 = iDB.open dbName, 2
         req2.onupgradeneeded = (e) ->
           dbInstance = e.target.result
           db.send dbInstance

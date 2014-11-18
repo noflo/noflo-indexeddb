@@ -1,5 +1,6 @@
 noflo = require 'noflo'
 Open = require 'noflo-indexeddb/components/Open.js'
+iDB = require 'noflo-indexeddb/vendor/IndexedDB.js'
 
 describe 'Open component', ->
   c = null
@@ -21,7 +22,7 @@ describe 'Open component', ->
     c.outPorts.db.attach db
     c.outPorts.error.attach error
   after (done) ->
-    req = indexedDB.deleteDatabase 'opendb'
+    req = iDB.deleteDatabase 'opendb'
     req.onsuccess = -> done()
 
   describe 'on first openining', ->

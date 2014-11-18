@@ -30,6 +30,7 @@
     "components/Put.coffee",
     "components/Get.coffee",
     "components/Delete.coffee",
+    "vendor/IndexedDB.js",
     "index.js"
   ],
   "json": [
