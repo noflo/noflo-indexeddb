@@ -65,6 +65,10 @@ module.exports = ->
               platform: 'OS X 10.8'
               version: '6'
             ,
+              browserName: 'safari'
+              platform: 'OS X 10.10'
+              version: '8'
+            ,
               browserName: 'internet explorer'
               platform: 'Windows 8.1',
               version: '11'
@@ -105,6 +109,7 @@ module.exports = ->
     @task.run 'noflo_manifest'
     @task.run 'noflo_browser'
     @task.run 'mocha_phantomjs'
+    @task.run 'crossbrowser'
 
   @registerTask 'default', ['test']
   @registerTask 'crossbrowser', 'Run tests on real browsers', ['coffeelint', 'build', 'connect', 'mocha_phantomjs', 'saucelabs-mocha']
