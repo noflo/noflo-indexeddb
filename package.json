@@ -25,9 +25,12 @@
     "grunt-noflo-browser": "^0.1.3",
     "grunt-noflo-manifest": "^0.1.4",
     "grunt-saucelabs": "^8.2.0",
-    "mocha": "~2.5.2"
+    "mocha": "~2.5.2",
+    "type-detect": "^2.0.1"
   },
-  "keywords": ["noflo"],
+  "keywords": [
+    "noflo"
+  ],
   "scripts": {
     "test": "grunt test"
   }
