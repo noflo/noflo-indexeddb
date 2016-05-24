@@ -8,3 +8,11 @@ env:
   global:
   - secure: g3F2/RJykVoNV+G9oy/a4jTHERQDjJMSIVgk0hGV1YJ8Z31oIuAPLNmk4+vtOb/mOksZMzKm3K2Z08OdjvLjvZ0d613QxZJ10rJYtqJU++X/Q+B6Gz0dBeQ3wRHAQ4oe/FkDI7RcbitmIpsq+QNbQac3lvP5gsx8eWhJFlJvjS4=
   - secure: SX29RBGkX/kk+Wb0dLGtaO4CZODQL5NTECZmGh5tbu/E+w3djeRcSHrKwg3K+cLzFfEe9/xIRLSnBQJH6+XUH8qlqbkrjG6Jtoz+jWN5ubol8Jf7HC6bkeorEdy0OHLobclPAb/VnRthZWVxeUl6tkh68Aa4xRs3wLQEf/MFPxY=
+deploy:
+  provider: npm
+  email: henri.bergius@iki.fi
+  api_key:
+    secure: guYFoWbEPmIw9ApCNLDaUH1iuwnxgT2HoK/5+sm0G4QXY9MDv4uB/XZjajZ+A8RVUsPv+q6sg7DgfeM+KKXR/OziNUEn/TBZL9ZU8mEccjRlOW6MFz26gR8GUF8eoK84w2MpAhIvc5Wrqb8RWsPcEGLHYd9WmLLno2/QopBSFTo=
+  on:
+    tags: true
+    repo: noflo/noflo-indexeddb
