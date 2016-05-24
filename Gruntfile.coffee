@@ -51,12 +51,7 @@ module.exports = ->
         options:
           urls: ['http://127.0.0.1:9999/spec/runner.html']
           browsers: [
-              browserName: 'googlechrome'
-              version: '34'
-            ,
-              browserName: 'safari'
-              platform: 'OS X 10.8'
-              version: '6'
+              browserName: 'chrome'
             ,
               browserName: 'safari'
               platform: 'OS X 10.10'
@@ -70,6 +65,8 @@ module.exports = ->
           testname: 'noflo-indexeddb browser tests'
           tunnelTimeout: 5
           concurrency: 1
+          detailedError: true
+
     # Coding standards
     coffeelint:
       components: ['components/*.coffee']
