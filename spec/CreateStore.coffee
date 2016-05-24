@@ -27,7 +27,7 @@ describe 'CreateStore component', ->
     it 'should be able to create an object store', (done) ->
       dbInstance = null
       store.on 'data', (data) ->
-        chai.expect(data).to.be.an 'object'
+        chai.expect(typeof data).to.equal 'object'
       store.on 'disconnect', ->
         dbInstance.close()
         done()

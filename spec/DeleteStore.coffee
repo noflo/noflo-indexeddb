@@ -31,7 +31,7 @@ describe 'DeleteStore component', ->
         dbInstance.close()
         chai.expect(true).to.equal false
       outDb.on 'data', (data) ->
-        chai.expect(data).to.be.an 'object'
+        chai.expect(typeof data).to.equal 'object'
         chai.expect(data.objectStoreNames.contains('items')).to.equal false
       name.send 'items'
       req = iDB.open dbName, 1

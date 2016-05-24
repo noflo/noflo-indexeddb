@@ -28,11 +28,9 @@ describe 'Open component', ->
   describe 'on first openining', ->
     it 'should provide upgrade request', (done) ->
       upgrade.once 'data', (data) ->
-        detect = require 'type-detect'
-        chai.expect(detect(data)).to.equal 'object'
-        chai.expect(data).to.be.an 'object'
+        chai.expect(typeof data).to.equal 'object'
         chai.expect(data.oldVersion).to.equal 0
-        chai.expect(data.db).to.be.an 'object'
+        chai.expect(typeof data.db).to.equal 'object'
         data.db.close()
         done()
       name.send 'opendb'
@@ -44,7 +42,7 @@ describe 'Open component', ->
         up = true
       db.once 'data', (data) ->
         chai.expect(up).to.equal false
-        chai.expect(data).to.be.an 'object'
+        chai.expect(typeof data).to.equal 'object'
         data.close()
         done()
       name.send 'opendb'

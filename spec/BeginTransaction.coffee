@@ -24,7 +24,7 @@ describe 'BeginTransaction component', ->
     it 'should be able to begin transaction', (done) ->
       dbInstance = null
       transaction.on 'data', (data) ->
-        chai.expect(data).to.be.an 'object'
+        chai.expect(typeof data).to.equal 'object'
         dbInstance.close()
         done()
       stores.send 'items,users'
