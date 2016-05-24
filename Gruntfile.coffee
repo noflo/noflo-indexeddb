@@ -39,14 +39,6 @@ module.exports = ->
       files: ['spec/*.coffee', 'components/*.coffee']
       tasks: ['test']
 
-    # BDD tests on browser
-    mocha_phantomjs:
-      options:
-        output: 'spec/result.xml'
-        reporter: 'spec'
-        failWithOutput: true
-      all: ['spec/runner.html']
-
     # Cross-browser testing
     connect:
       server:
@@ -90,7 +82,6 @@ module.exports = ->
 
   # Grunt plugins used for testing
   @loadNpmTasks 'grunt-contrib-watch'
-  @loadNpmTasks 'grunt-mocha-phantomjs'
   @loadNpmTasks 'grunt-coffeelint'
 
   # Grunt plugins used for browser testing
@@ -106,11 +97,8 @@ module.exports = ->
 
   @registerTask 'test', 'Build NoFlo and run automated tests', (target = 'all') =>
     @task.run 'coffeelint'
-    @task.run 'coffee'
-    @task.run 'noflo_manifest'
-    @task.run 'noflo_browser'
-    @task.run 'mocha_phantomjs'
-    @task.run 'crossbrowser'
+    @task.run 'build'
+    @task.run 'connect'
+    @task.run 'saucelabs-mocha'
 
   @registerTask 'default', ['test']
-  @registerTask 'crossbrowser', 'Run tests on real browsers', ['coffeelint', 'build', 'connect', 'mocha_phantomjs', 'saucelabs-mocha']
