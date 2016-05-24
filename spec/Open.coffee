@@ -28,6 +28,8 @@ describe 'Open component', ->
   describe 'on first openining', ->
     it 'should provide upgrade request', (done) ->
       upgrade.once 'data', (data) ->
+        t = typeof data
+        chai.expect(t).to.equal 'object'
         chai.expect(data).to.be.an 'object'
         chai.expect(data.oldVersion).to.equal 0
         chai.expect(data.db).to.be.an 'object'
