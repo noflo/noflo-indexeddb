@@ -53,9 +53,7 @@ module.exports = ->
           browsers: [
               browserName: 'chrome'
             ,
-              browserName: 'safari'
-              platform: 'OS X 10.10'
-              version: '8'
+              browserName: 'firefox'
             ,
               browserName: 'internet explorer'
               platform: 'Windows 8.1',
