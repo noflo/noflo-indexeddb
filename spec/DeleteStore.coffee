@@ -1,6 +1,11 @@
 noflo = require 'noflo'
-DeleteStore = require 'noflo-indexeddb/components/DeleteStore.js'
-iDB = require 'noflo-indexeddb/vendor/IndexedDB.js'
+iDB = window.overrideIndexedDB or window.indexedDB or window.mozIndexedDB or window.webkitIndexedDB or window.msIndexedDB
+unless noflo.isBrowser()
+  chai = require 'chai'
+  path = require 'path'
+  baseDir = path.resolve __dirname, '../'
+else
+  baseDir = 'noflo-indexeddb'
 
 describe 'DeleteStore component', ->
   c = null
@@ -9,16 +14,24 @@ describe 'DeleteStore component', ->
   err = null
   outDb = null
   dbName = 'deletestore'
-  beforeEach ->
-    c = DeleteStore.getComponent()
-    name = noflo.internalSocket.createSocket()
-    db = noflo.internalSocket.createSocket()
-    outDb = noflo.internalSocket.createSocket()
-    err = noflo.internalSocket.createSocket()
-    c.inPorts.name.attach name
-    c.inPorts.db.attach db
-    c.outPorts.db.attach outDb
-    c.outPorts.error.attach err
+  dbName = 'begintransaction'
+  loader = null
+  before ->
+    loader = new noflo.ComponentLoader baseDir
+  beforeEach (done) ->
+    @timeout 4000
+    loader.load 'indexeddb/DeleteStore', (e, instance) ->
+      return done e if e
+      c = instance
+      name = noflo.internalSocket.createSocket()
+      db = noflo.internalSocket.createSocket()
+      outDb = noflo.internalSocket.createSocket()
+      err = noflo.internalSocket.createSocket()
+      c.inPorts.name.attach name
+      c.inPorts.db.attach db
+      c.outPorts.db.attach outDb
+      c.outPorts.error.attach err
+      done()
   after (done) ->
     req = iDB.deleteDatabase dbName
     req.onsuccess = -> done()
@@ -29,7 +42,7 @@ describe 'DeleteStore component', ->
 
       err.once 'data', (data) ->
         dbInstance.close()
-        chai.expect(true).to.equal false
+        done data
       outDb.on 'data', (data) ->
         chai.expect(typeof data).to.equal 'object'
         chai.expect(data.objectStoreNames.contains('items')).to.equal false

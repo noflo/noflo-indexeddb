@@ -1,6 +1,11 @@
 noflo = require 'noflo'
-CreateStore = require 'noflo-indexeddb/components/CreateStore.js'
-iDB = require 'noflo-indexeddb/vendor/IndexedDB.js'
+iDB = window.overrideIndexedDB or window.indexedDB or window.mozIndexedDB or window.webkitIndexedDB or window.msIndexedDB
+unless noflo.isBrowser()
+  chai = require 'chai'
+  path = require 'path'
+  baseDir = path.resolve __dirname, '../'
+else
+  baseDir = 'noflo-indexeddb'
 
 describe 'CreateStore component', ->
   c = null
@@ -9,16 +14,23 @@ describe 'CreateStore component', ->
   store = null
   keypath = null
   dbName = 'createstore'
-  beforeEach ->
-    c = CreateStore.getComponent()
-    name = noflo.internalSocket.createSocket()
-    db = noflo.internalSocket.createSocket()
-    store = noflo.internalSocket.createSocket()
-    keypath = noflo.internalSocket.createSocket()
-    c.inPorts.name.attach name
-    c.inPorts.db.attach db
-    c.inPorts.keypath.attach keypath
-    c.outPorts.store.attach store
+  loader = null
+  before ->
+    loader = new noflo.ComponentLoader baseDir
+  beforeEach (done) ->
+    @timeout 4000
+    loader.load 'indexeddb/CreateStore', (err, instance) ->
+      return done err if err
+      c = instance
+      name = noflo.internalSocket.createSocket()
+      db = noflo.internalSocket.createSocket()
+      store = noflo.internalSocket.createSocket()
+      keypath = noflo.internalSocket.createSocket()
+      c.inPorts.name.attach name
+      c.inPorts.db.attach db
+      c.inPorts.keypath.attach keypath
+      c.outPorts.store.attach store
+      done()
   after (done) ->
     req = iDB.deleteDatabase dbName
     req.onsuccess = -> done()

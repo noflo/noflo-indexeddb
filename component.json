@@ -3,7 +3,7 @@
   "description": "IndexedDB components for NoFlo",
   "author": "Henri Bergius <henri.bergius@iki.fi>",
   "repo": "noflo/noflo-indexeddb",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "keywords": [],
   "dependencies": {
     "noflo/noflo": "*"
