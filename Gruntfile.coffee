@@ -51,10 +51,9 @@ module.exports = ->
         options:
           urls: ['http://127.0.0.1:9999/spec/runner.html']
           browsers: [
-              browserName: 'chrome'
+              browserName: 'googlechrome'
             ,
               browserName: 'internet explorer'
-              platform: 'Windows 8.1',
               version: '11'
           ]
           build: process.env.TRAVIS_JOB_ID
