@@ -1,6 +1,11 @@
 noflo = require 'noflo'
-BeginTransaction = require 'noflo-indexeddb/components/BeginTransaction.js'
-iDB = require 'noflo-indexeddb/vendor/IndexedDB.js'
+iDB = window.overrideIndexedDB or window.indexedDB or window.mozIndexedDB or window.webkitIndexedDB or window.msIndexedDB
+unless noflo.isBrowser()
+  chai = require 'chai'
+  path = require 'path'
+  baseDir = path.resolve __dirname, '../'
+else
+  baseDir = 'noflo-indexeddb'
 
 describe 'BeginTransaction component', ->
   c = null
@@ -8,14 +13,21 @@ describe 'BeginTransaction component', ->
   db = null
   transaction = null
   dbName = 'begintransaction'
-  beforeEach ->
-    c = BeginTransaction.getComponent()
-    stores = noflo.internalSocket.createSocket()
-    db = noflo.internalSocket.createSocket()
-    transaction = noflo.internalSocket.createSocket()
-    c.inPorts.stores.attach stores
-    c.inPorts.db.attach db
-    c.outPorts.transaction.attach transaction
+  loader = null
+  before ->
+    loader = new noflo.ComponentLoader baseDir
+  beforeEach (done) ->
+    @timeout 4000
+    loader.load 'indexeddb/BeginTransaction', (err, instance) ->
+      return done err if err
+      c = instance
+      stores = noflo.internalSocket.createSocket()
+      db = noflo.internalSocket.createSocket()
+      transaction = noflo.internalSocket.createSocket()
+      c.inPorts.stores.attach stores
+      c.inPorts.db.attach db
+      c.outPorts.transaction.attach transaction
+      done()
   after (done) ->
     req = iDB.deleteDatabase dbName
     req.onsuccess = -> done()
