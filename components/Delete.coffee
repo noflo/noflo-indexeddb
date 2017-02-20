@@ -10,6 +10,7 @@ class Delete extends noflo.Component
       key: new noflo.Port 'string'
     @outPorts =
       store: new noflo.Port 'object'
+      key: new noflo.Port 'string'
       error: new noflo.Port 'object'
 
     @inPorts.store.on 'data', (@store) =>
@@ -24,6 +25,9 @@ class Delete extends noflo.Component
       if @outPorts.store.isAttached()
         @outPorts.store.send @store
         @outPorts.store.disconnect()
+      if @outPorts.key.isAttached()
+        @outPorts.key.send @key
+        @outPorts.key.disconnect()
       @key = null
       @store = null
     req.onerror = @error

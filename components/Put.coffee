@@ -10,7 +10,8 @@ class Put extends noflo.Component
       value: new noflo.Port 'all'
     @outPorts =
       store: new noflo.Port 'object'
-      key: new noflo.Port 'all'
+      key: new noflo.Port 'string'
+      value: new noflo.Port 'all'
       error: new noflo.Port 'object'
 
     @inPorts.store.on 'data', (@store) =>
@@ -21,6 +22,7 @@ class Put extends noflo.Component
   put: ->
     return unless @store and @value
     req = @store.put @value
+    value = @value
     @value = null
     if @outPorts.store.isAttached()
       @outPorts.store.send @store
@@ -30,6 +32,9 @@ class Put extends noflo.Component
       if @outPorts.key.isAttached()
         @outPorts.key.send e.target.result
         @outPorts.key.disconnect()
+      if @outPorts.value.isAttached()
+        @outPorts.value.send value
+        @outPorts.value.disconnect()
     req.onerror = @error.bind @
 
 exports.getComponent = -> new Put
