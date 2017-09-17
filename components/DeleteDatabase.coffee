@@ -1,22 +1,22 @@
 noflo = require 'noflo'
 indexedDB = require '../vendor/IndexedDB'
 
-class DeleteDatabase extends noflo.Component
-  constructor: ->
-    @inPorts =
-      name: new noflo.Port 'string'
-    @outPorts =
-      deleted: new noflo.Port 'bang'
-      error: new noflo.Port 'object'
+# @platform noflo-browser
 
-    @inPorts.name.on 'data', (name) =>
-      @deleteDb name
-
-  deleteDb: (name) ->
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'name',
+    datatype: 'string'
+  c.outPorts.add 'deleted',
+    datatype: 'bang'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'name'
+    name = input.getData 'name'
     req = indexedDB.deleteDatabase name
-    req.onsuccess = =>
-      @outPorts.deleted.send true
-      @outPorts.deleted.disconnect()
-    req.onerror = @error
-
-exports.getComponent = -> new DeleteDatabase
+    req.onerror = (err) ->
+      output.done err
+    req.onsuccess = ->
+      output.sendDone
+        deleted: true

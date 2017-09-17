@@ -1,14 +1,16 @@
 noflo = require 'noflo'
 
-class QueryOnly extends noflo.Component
-  constructor: ->
-    @inPorts =
-      value: new noflo.Port 'all'
-    @outPorts =
-      range: new noflo.Port 'object'
+# @platform noflo-browser
 
-    @inPorts.value.on 'data', (value) =>
-      @outPorts.range.send IDBKeyRange.only value
-      @outPorts.range.disconnect()
-
-exports.getComponent = -> new QueryOnly
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'value',
+    datatype: 'all'
+  c.outPorts.add 'range',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'value'
+    value = input.getData 'value'
+    range = IDBKeyRange.only value
+    output.sendDone
+      range: range

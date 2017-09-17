@@ -1,36 +1,27 @@
 noflo = require 'noflo'
 
-class Get extends noflo.Component
-  constructor: ->
-    @store = null
-    @key = null
+# @platform noflo-browser
 
-    @inPorts =
-      store: new noflo.Port 'object'
-      key: new noflo.Port 'string'
-    @outPorts =
-      store: new noflo.Port 'object'
-      item: new noflo.Port 'all'
-      error: new noflo.Port 'object'
-
-    @inPorts.store.on 'data', (@store) =>
-      do @get
-    @inPorts.key.on 'data', (@key) =>
-      do @get
-
-  get: ->
-    return unless @store and @key
-    req = @store.get @key
-    if @outPorts.store.isAttached()
-      @outPorts.store.send @store
-      @outPorts.store.disconnect()
-    @store = null
-    req.onsuccess = (e) =>
-      @outPorts.item.beginGroup @key
-      @outPorts.item.send e.target.result
-      @outPorts.item.endGroup()
-      @outPorts.item.disconnect()
-      @key = null
-    req.onerror = @error.bind @
-
-exports.getComponent = -> new Get
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'store',
+    datatype: 'object'
+  c.inPorts.add 'key',
+    datatype: 'string'
+  c.outPorts.add 'store',
+    datatype: 'object'
+  c.outPorts.add 'item',
+    datatype: 'all'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'store', 'key'
+    [store, key] = input.getData 'store', 'key'
+    req = store.get key
+    output.send
+      store: store
+    req.onerror = (err) ->
+      output.done err
+    req.onsuccess = (e) ->
+      output.sendDone
+        item: e.target.result

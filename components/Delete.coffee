@@ -1,35 +1,28 @@
 noflo = require 'noflo'
 
-class Delete extends noflo.Component
-  constructor: ->
-    @store = null
-    @key = null
+# @platform noflo-browser
 
-    @inPorts =
-      store: new noflo.Port 'object'
-      key: new noflo.Port 'string'
-    @outPorts =
-      store: new noflo.Port 'object'
-      key: new noflo.Port 'string'
-      error: new noflo.Port 'object'
-
-    @inPorts.store.on 'data', (@store) =>
-      do @get
-    @inPorts.key.on 'data', (@key) =>
-      do @get
-
-  get: ->
-    return unless @store and @key
-    req = @store.delete @key
-    req.onsuccess = (e) =>
-      if @outPorts.store.isAttached()
-        @outPorts.store.send @store
-        @outPorts.store.disconnect()
-      if @outPorts.key.isAttached()
-        @outPorts.key.send @key
-        @outPorts.key.disconnect()
-      @key = null
-      @store = null
-    req.onerror = @error
-
-exports.getComponent = -> new Delete
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'store',
+    datatype: 'object'
+  c.inPorts.add 'key',
+    datatype: 'key'
+  c.outPorts.add 'store',
+    datatype: 'object'
+  c.outPorts.add 'key',
+    datatype: 'object'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'store', 'key'
+    [store, key] = input.getData 'store', 'key'
+    req = store.delete key
+    req.onerror = (err) ->
+      output.done err
+    req.onsuccess = (e) ->
+      output.send
+        store: store
+      output.send
+        key: key
+      output.done()
