@@ -1,17 +1,21 @@
 noflo = require 'noflo'
 
-class QueryFrom extends noflo.Component
-  constructor: ->
-    @including = false
-    @inPorts =
-      value: new noflo.Port 'all'
-      including: new noflo.Port 'boolean'
-    @outPorts =
-      range: new noflo.Port 'object'
+# @platform noflo-browser
 
-    @inPorts.value.on 'data', (value) =>
-      @outPorts.range.send IDBKeyRange.lowerBound value, @including
-      @outPorts.range.disconnect()
-    @inPorts.including.on 'data', (@including) =>
-
-exports.getComponent = -> new QueryFrom
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'value',
+    datatype: 'all'
+  c.inPorts.add 'including',
+    datatype: 'boolean'
+    control: true
+    default: false
+  c.outPorts.add 'range',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'value'
+    value = input.getData 'value'
+    including = if input.hasData('including') then input.getData('including') else false
+    range = IDBKeyRange.lowerBound value, including
+    output.sendDone
+      range: range

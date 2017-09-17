@@ -1,11 +1,17 @@
 noflo = require 'noflo'
 
-class Close extends noflo.Component
-  constructor: ->
-    @inPorts =
-      db: new noflo.Port 'object'
+# @platform noflo-browser
 
-    @inPorts.db.on 'data', (db) ->
-      db.close()
-
-exports.getComponent = -> new Close
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'db',
+    datatype: 'object'
+  c.outPorts.add 'closed',
+    datatype: 'bang'
+  c.process (input, output) ->
+    return unless input.hasData 'db'
+    db = input.getData 'db'
+    db.onclose = ->
+      output.sendDone
+        closed: true
+    db.close()

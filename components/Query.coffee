@@ -1,55 +1,41 @@
 noflo = require 'noflo'
 
-class Query extends noflo.Component
-  constructor: ->
-    @store = null
-    @range = null
-    @all = false
+# @platform noflo-browser
 
-    @inPorts =
-      store: new noflo.Port 'object'
-      range: new noflo.Port 'object'
-      all: new noflo.Port 'bang'
-    @outPorts =
-      item: new noflo.Port 'all'
-      range: new noflo.Port 'object'
-      error: new noflo.Port 'object'
-
-    @inPorts.store.on 'data', (@store) =>
-      do @query
-    @inPorts.range.on 'data', (@range) =>
-      do @query
-    @inPorts.all.on 'data', =>
-      @all = true
-      do @query
-
-  query: ->
-    return unless @store
-    if @all
-      req = @store.openCursor()
-      @store = null
-      @all = false
-      req.onsuccess = @step
-      req.onerror = @error
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'store',
+    datatype: 'object'
+  c.inPorts.add 'range',
+    datatype: 'object'
+  c.inPorts.add 'all',
+    datatype: 'bang'
+  c.outPorts.add 'item',
+    datatype: 'all'
+  c.outPorts.add 'range',
+    datatype: 'object'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'store'
+    step = (e) ->
+      cursor = e.target.result
+      return output.done() unless cursor
+      output.send
+        item: cursor.value
+      cursor.continue()
+    if input.hasData 'all'
+      [store, all] = input.getData 'store', 'all'
+      req = store.openCursor()
+      req.onerror = (err) ->
+        output.done err
+      req.onsuccess = step
       return
-    if @range
-      req = @store.openCursor @range
-      @store = null
-      if @outPorts.range.isAttached()
-        @outPorts.range.send @range
-        @outPorts.range.disconnect()
-      @range = null
-      req.onsuccess = @step
-      req.onerror = @error
-
-  step: (e) =>
-    cursor = e.target.result
-    unless cursor
-      @outPorts.item.disconnect()
-      return
-    @outPorts.item.beginGroup cursor.key
-    @outPorts.item.send cursor.value
-    @outPorts.item.endGroup()
-    cursor.continue()
-
-exports.getComponent = -> new Query
+    if input.hasData 'range'
+      [store, range] = input.getData 'store', 'range'
+      output.send
+        range: range
+      req = store.openCursor range
+      req.onerror = (err) ->
+        output.done err
+      req.onsuccess = step

@@ -3,12 +3,6 @@ module.exports = ->
   @initConfig
     pkg: @file.readJSON 'package.json'
 
-    # Updating the package manifest files
-    noflo_manifest:
-      update:
-        files:
-          'component.json': ['graphs/*', 'components/*']
-
     # CoffeeScript compilation
     coffee:
       spec:
@@ -24,7 +18,7 @@ module.exports = ->
     noflo_browser:
       build:
         files:
-          'browser/noflo-indexeddb.js': ['component.json']
+          'browser/noflo-indexeddb.js': ['package.json']
 
     # JavaScript minification for the browser
     uglify:
@@ -45,6 +39,12 @@ module.exports = ->
         options:
           base: ''
           port: 9999
+    mocha_phantomjs:
+      all:
+        options:
+          output: 'spec/result.xml'
+          reporter: 'spec'
+          urls: ['http://localhost:9999/spec/runner.html']
 
     'saucelabs-mocha':
       all:
@@ -64,10 +64,13 @@ module.exports = ->
 
     # Coding standards
     coffeelint:
-      components: ['components/*.coffee']
+      components:
+        options:
+          max_line_length:
+            level: "ignore"
+        src: ['components/*.coffee']
 
   # Grunt plugins used for building
-  @loadNpmTasks 'grunt-noflo-manifest'
   @loadNpmTasks 'grunt-noflo-browser'
   @loadNpmTasks 'grunt-contrib-coffee'
   @loadNpmTasks 'grunt-contrib-uglify'
@@ -78,12 +81,12 @@ module.exports = ->
 
   # Grunt plugins used for browser testing
   @loadNpmTasks 'grunt-contrib-connect'
+  @loadNpmTasks 'grunt-mocha-phantomjs'
   @loadNpmTasks 'grunt-saucelabs'
 
   # Our local tasks
   @registerTask 'build', 'Build NoFlo for the chosen target platform', (target = 'all') =>
     @task.run 'coffee'
-    @task.run 'noflo_manifest'
     @task.run 'noflo_browser'
     @task.run 'uglify'
 
@@ -91,6 +94,10 @@ module.exports = ->
     @task.run 'coffeelint'
     @task.run 'build'
     @task.run 'connect'
+    @task.run 'mocha_phantomjs'
+
+  @registerTask 'crossbrowser', 'Build, run tests on cross-browser environment', (target = 'all') =>
+    @task.run 'test'
     @task.run 'saucelabs-mocha'
 
   @registerTask 'default', ['test']

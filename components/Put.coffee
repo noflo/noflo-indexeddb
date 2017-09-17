@@ -1,40 +1,31 @@
 noflo = require 'noflo'
 
-class Put extends noflo.Component
-  constructor: ->
-    @store = null
-    @value = null
+# @platform noflo-browser
 
-    @inPorts =
-      store: new noflo.Port 'object'
-      value: new noflo.Port 'all'
-    @outPorts =
-      store: new noflo.Port 'object'
-      key: new noflo.Port 'string'
-      value: new noflo.Port 'all'
-      error: new noflo.Port 'object'
-
-    @inPorts.store.on 'data', (@store) =>
-      do @put
-    @inPorts.value.on 'data', (@value) =>
-      do @put
-
-  put: ->
-    return unless @store and @value
-    req = @store.put @value
-    value = @value
-    @value = null
-    if @outPorts.store.isAttached()
-      @outPorts.store.send @store
-      @outPorts.store.disconnect()
-    @store = null
-    req.onsuccess = (e) =>
-      if @outPorts.key.isAttached()
-        @outPorts.key.send e.target.result
-        @outPorts.key.disconnect()
-      if @outPorts.value.isAttached()
-        @outPorts.value.send value
-        @outPorts.value.disconnect()
-    req.onerror = @error.bind @
-
-exports.getComponent = -> new Put
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'store',
+    datatype: 'object'
+  c.inPorts.add 'value',
+    datatype: 'all'
+  c.outPorts.add 'store',
+    datatype: 'object'
+  c.outPorts.add 'key',
+    datatype: 'string'
+  c.outPorts.add 'value',
+    datatype: 'all'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'store', 'value'
+    [store, value] = input.getData 'store', 'value'
+    req = store.put value
+    output.send
+      store: store
+    req.onerror = (err) ->
+      output.done err
+    req.onsuccess = (e) ->
+      output.send
+        key: e.target.result
+      output.sendDone
+        value: value

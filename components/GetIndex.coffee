@@ -1,34 +1,23 @@
 noflo = require 'noflo'
 
-class GetIndex extends noflo.Component
-  constructor: ->
-    @store = null
-    @name = null
+# @platform noflo-browser
 
-    @inPorts =
-      store: new noflo.Port 'object'
-      name: new noflo.Port 'string'
-    @outPorts =
-      index: new noflo.Port 'object'
-      error: new noflo.Port 'object'
-
-    @inPorts.store.on 'data', (@store) =>
-      do @get
-    @inPorts.name.on 'data', (@name) =>
-      do @get
-
-  get: ->
-    return unless @store and @name
-    @store.onerror = @error
-    index = @store.index @name
-    @store.onerror = null
-
-    @outPorts.index.beginGroup @name
-    @outPorts.index.send index
-    @outPorts.index.endGroup()
-    @outPorts.index.disconnect()
-
-    @store = null
-    @name = null
-
-exports.getComponent = -> new GetIndex
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'store',
+    datatype: 'object'
+  c.inPorts.add 'name',
+    datatype: 'string'
+  c.outPorts.add 'index',
+    datatype: 'object'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'store', 'name'
+    [store, name] = input.getData 'store', 'name'
+    store.onerror = (err) ->
+      output.done err
+    index = store.index name
+    store.onerror = null
+    output.sendDone
+      index: index

@@ -1,47 +1,39 @@
 noflo = require 'noflo'
 
-# @name CreateStore
+# @platform noflo-browser
 
-class CreateStore extends noflo.Component
-  constructor: ->
-    @name = null
-    @db = null
-    @keyPath = ''
-    @autoIncrement = false
-
-    @inPorts =
-      name: new noflo.Port 'name'
-      db: new noflo.Port 'object'
-      keypath: new noflo.Port 'name'
-      autoincrement: new noflo.Port 'boolean'
-    @outPorts =
-      store: new noflo.Port 'object'
-      db: new noflo.Port 'object'
-      error: new noflo.Port 'error'
-
-    @inPorts.name.on 'data', (@name) =>
-      do @create
-    @inPorts.db.on 'data', (@db) =>
-      do @create
-    @inPorts.keypath.on 'data', (@keyPath) =>
-    @inPorts.autoincrement.on 'data', (@autoIncrement) =>
-
-  create: ->
-    return unless @name and @db
-    @db.transaction.onerror = @error
-    store = @db.createObjectStore @name,
-      keyPath: @keyPath
-      autoIncrement: @autoIncrement
-    if store and @outPorts.store.isAttached()
-      @outPorts.store.beginGroup @name
-      @outPorts.store.send store
-      @outPorts.store.endGroup()
-      @outPorts.store.disconnect()
-    @db.transaction.onerror = null
-    if @outPorts.db.isAttached()
-      @outPorts.db.send @db
-      @outPorts.db.disconnect()
-    @db = null
-    @name = null
-
-exports.getComponent = -> new CreateStore
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'name',
+    datatype: 'string'
+  c.inPorts.add 'db',
+    datatype: 'object'
+  c.inPorts.add 'keypath',
+    datatype: 'string'
+    control: true
+  c.inPorts.add 'autoincrement',
+    datatype: 'boolean'
+    control: true
+    default: false
+  c.outPorts.add 'store',
+    datatype: 'object'
+  c.outPorts.add 'db',
+    datatype: 'object'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'name', 'db'
+    keyPath = if input.hasData('keypath') then input.getData('keypath') else ''
+    autoIncrement = if input.hasData('autoincrement') then input.getData('autoincrement') else false
+    [name, db] = input.getData 'name', 'db'
+    db.transaction.onerror = (err) ->
+      output.done err
+    store = db.createObjectStore name,
+      keyPath: keyPath
+      autoIncrement: autoIncrement
+    db.transaction.onerror = null
+    output.send
+      store: store
+    output.send
+      db: db
+    output.done()

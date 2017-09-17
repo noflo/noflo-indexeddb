@@ -1,33 +1,23 @@
 noflo = require 'noflo'
 
-# @name DeleteStore
+# @platform noflo-browser
 
-class DeleteStore extends noflo.Component
-  constructor: ->
-    @name = null
-    @db = null
-
-    @inPorts =
-      name: new noflo.Port 'name'
-      db: new noflo.Port 'object'
-    @outPorts =
-      db: new noflo.Port 'object'
-      error: new noflo.Port 'object'
-
-    @inPorts.name.on 'data', (@name) =>
-      do @deleteStore
-    @inPorts.db.on 'data', (@db) =>
-      do @deleteStore
-
-  deleteStore: ->
-    return unless @name and @db
-    @db.transaction.onerror = @error
-    @db.deleteObjectStore @name
-    @db.transaction.onerror = null
-    if @outPorts.db.isAttached()
-      @outPorts.db.send @db
-      @outPorts.db.disconnect()
-    @db = null
-    @name = null
-
-exports.getComponent = -> new DeleteStore
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'name',
+    datatype: 'string'
+  c.inPorts.add 'db',
+    datatype: 'object'
+  c.outPorts.add 'db',
+    datatype: 'object'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'name', 'db'
+    [name, db] = input.getData 'name', 'db'
+    db.transaction.onerror = (err) ->
+      output.done err
+    db.deleteObjectStore name
+    db.transaction.onerror = null
+    output.sendDone
+      db: db

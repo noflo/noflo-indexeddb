@@ -1,44 +1,33 @@
 noflo = require 'noflo'
 
-class UpgradeRouter extends noflo.Component
-  constructor: ->
-    @groups = []
-    @inPorts =
-      upgrade: new noflo.Port 'object'
-    @outPorts =
-      versions: new noflo.ArrayPort 'object'
-      missed: new noflo.Port 'object'
-
-    @inPorts.upgrade.on 'begingroup', (group) =>
-      @groups.push group
-    @inPorts.upgrade.on 'data', (upgrade) =>
-      @route upgrade
-    @inPorts.upgrade.on 'endgroup', =>
-      @groups.pop()
-    @inPorts.upgrade.on 'disconnect', =>
-      @groups = []
-
-  route: (upgrade) ->
-    upgraded = false
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'upgrade',
+    datatype: 'object'
+  c.outPorts.add 'versions',
+    datatype: 'object'
+    addressable: true
+  c.outPorts.add 'missed',
+    datatype: 'object'
+  c.forwardBrackets =
+    upgrade: ['versions', 'missed']
+  c.process = (input, output) ->
+    return unless input.hasData 'upgrade'
+    upgrade = input.getData 'upgrade'
+    missed = false
     migration = 0
     while migration < upgrade.newVersion
       if migration < upgrade.oldVersion
         migration++
         continue
-      unless @outPorts.versions.isAttached migration
+      unless c.outPorts.versions.isAttached migration
         migration++
+        missed = true
         continue
-      @outPorts.versions.beginGroup group, migration for group in @groups
-      @outPorts.versions.send upgrade.db, migration
-      @outPorts.versions.endGroup migration for group in @groups
-      @outPorts.versions.disconnect migration
-      upgraded = true
+      output.send
+        versions: new noflo.IP 'data', upgrade.db,
+          index: migration
       migration++
-    return if upgraded
-    return unless @outPorts.missed.isAttached()
-    @outPorts.missed.beginGroup group for group in @groups
-    @outPorts.missed.send upgrade.db
-    @outPorts.missed.endGroup() for group in @groups
-    @outPorts.missed.disconnect()
-
-exports.getComponent = -> new UpgradeRouter
+    return output.done() unless missed
+    output.sendDone
+      missed: upgrade.db

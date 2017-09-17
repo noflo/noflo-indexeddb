@@ -1,44 +1,32 @@
 noflo = require 'noflo'
 indexedDB = require '../vendor/IndexedDB'
 
-# @name Open
+# @platform noflo-browser
 
-class Open extends noflo.Component
-  constructor: ->
-    @name = null
-    @version = null
-    @inPorts =
-      name: new noflo.Port 'name'
-      version: new noflo.Port 'number'
-    @outPorts =
-      upgrade: new noflo.Port 'object'
-      db: new noflo.Port 'object'
-      error: new noflo.Port 'object'
-
-    @inPorts.name.on 'data', (@name) =>
-      do @open
-    @inPorts.version.on 'data', (@version) =>
-      do @open
-
-  open: ->
-    return unless @name and @version
-    req = indexedDB.open @name, parseInt @version
-    @name = null
-    version = @version
-    @version = null
-    req.onupgradeneeded = (e) =>
-      @outPorts.upgrade.beginGroup @name
-      @outPorts.upgrade.send
-        oldVersion: e.oldVersion
-        newVersion: version
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'name',
+    datatype: 'string'
+  c.inPorts.add 'version',
+    datatype: 'integer'
+  c.outPorts.add 'upgrade',
+    datatype: 'object'
+  c.outPorts.add 'db',
+    datatype: 'object'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'name', 'version'
+    [name, version] = input.getData 'name', 'version'
+    req = indexedDB.open name, parseInt version
+    req.onerror = (err) ->
+      output.done err
+    req.onupgradeneeded = (e) ->
+      output.send
+        upgrade:
+          oldVersion: e.oldVersion
+          newVersion: parseInt version
+          db: e.target.result
+    req.onsuccess = (e) ->
+      output.sendDone
         db: e.target.result
-      @outPorts.upgrade.endGroup()
-      @outPorts.upgrade.disconnect()
-    req.onsuccess = (e) =>
-      @outPorts.db.beginGroup @name
-      @outPorts.db.send e.target.result
-      @outPorts.db.endGroup()
-      @outPorts.db.disconnect()
-    req.onerror = @error.bind @
-
-exports.getComponent = -> new Open

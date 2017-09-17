@@ -3,6 +3,8 @@ node_js:
 - '4.2'
 before_script:
 - npm install -g grunt-cli
+script:
+- grunt crossbrowser
 env:
   global:
   - secure: g3F2/RJykVoNV+G9oy/a4jTHERQDjJMSIVgk0hGV1YJ8Z31oIuAPLNmk4+vtOb/mOksZMzKm3K2Z08OdjvLjvZ0d613QxZJ10rJYtqJU++X/Q+B6Gz0dBeQ3wRHAQ4oe/FkDI7RcbitmIpsq+QNbQac3lvP5gsx8eWhJFlJvjS4=

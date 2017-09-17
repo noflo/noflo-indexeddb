@@ -1,51 +1,41 @@
 noflo = require 'noflo'
 
-# @name CreateIndex
+# @platform noflo-browser
 
-class CreateIndex extends noflo.Component
-  constructor: ->
-    @store = null
-    @name = null
-    @keyPath = null
-    @unique = false
-    @multiEntry = false
-    @inPorts =
-      store: new noflo.Port 'object'
-      name: new noflo.Port 'string'
-      keypath: new noflo.Port 'string'
-      unique: new noflo.Port 'boolean'
-      multientry: new noflo.Port 'boolean'
-    @outPorts =
-      index: new noflo.Port 'object'
-      store: new noflo.Port 'object'
-      error: new noflo.Port 'object'
-
-    @inPorts.store.on 'data', (@store) =>
-      do @create
-    @inPorts.name.on 'data', (@name) =>
-      do @create
-    @inPorts.keypath.on 'data', (@keyPath) =>
-      do @create
-    @inPorts.unique.on 'data', (@unique) =>
-    @inPorts.multientry.on 'data', (@multiEntry) =>
-
-  create: ->
-    return unless @store and @name and @keyPath
-    @store.onerror = @error.bind @
-    index = @store.createIndex @name, @keyPath,
-      unique: @unique
-      multiEntry: @multiEntry
-    @store.onerror = null
-    @name = null
-    @keyPath = null
-    if @outPorts.index.isAttached()
-      @outPorts.index.beginGroup index.name
-      @outPorts.index.send index
-      @outPorts.index.endGroup()
-      @outPorts.index.disconnect()
-    if @outPorts.store.isAttached()
-      @outPorts.store.send @store
-      @outPorts.store.disconnect()
-    @store = null
-
-exports.getComponent = -> new CreateIndex
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'store',
+    datatype: 'object'
+  c.inPorts.add 'name',
+    datatype: 'string'
+  c.inPorts.add 'keypath',
+    datatype: 'string'
+  c.inports.add 'unique',
+    datatype: 'boolean'
+    control: true
+    default: false
+  c.inports.add 'multientry',
+    datatype: 'boolean'
+    control: true
+    default: false
+  c.outPorts.add 'index',
+    datatype: 'object'
+  c.outPorts.add 'store',
+    datatype: 'object'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'store', 'name', 'keypath'
+    unique = if input.hasData('unique') then input.getData('unique') else false
+    multiEntry = if input.hasData('multientry') then input.getData('multientry') else false
+    [store, name, keypath] = input.getData 'store', 'name', 'keypath'
+    store.onerror = (err) ->
+      output.done err
+    index = store.createIndex name, keyPath,
+      unique: unique
+      multiEntry: multiEntry
+    store.onerror = null
+    output.send
+      index: index
+    output.sendDone
+      store: store

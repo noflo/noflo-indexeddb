@@ -1,39 +1,27 @@
 noflo = require 'noflo'
 
-# @name GetStore
+# @platform noflo-browser
 
-class GetStore extends noflo.Component
-  constructor: ->
-    @transaction = null
-    @name = null
-
-    @inPorts =
-      name: new noflo.Port 'string'
-      transaction: new noflo.Port 'object'
-    @outPorts =
-      store: new noflo.Port 'object'
-      transaction: new noflo.Port 'object'
-      error: new noflo.Port 'object'
-
-    @inPorts.name.on 'data', (@name) =>
-      do @get
-    @inPorts.transaction.on 'data', (@transaction) =>
-      do @get
-
-  get: ->
-    return unless @name and @transaction
-    @transaction.onerror = @error
-    store = @transaction.objectStore @name
-    @transaction.onerror = null
-    @outPorts.store.beginGroup @name
-    @outPorts.store.send store
-    @outPorts.store.endGroup()
-    @outPorts.store.disconnect()
-
-    if @outPorts.transaction.isAttached()
-      @outPorts.transaction.send @transaction
-      @outPorts.transaction.disconnect()
-    @transaction = null
-    @name = null
-
-exports.getComponent = -> new GetStore
+exports.getComponent = ->
+  c = new noflo.Component
+  c.inPorts.add 'name',
+    datatype: 'string'
+  c.inPorts.add 'transaction',
+    datatype: 'object'
+  c.outPorts.add 'store',
+    datatype: 'object'
+  c.outPorts.add 'transaction',
+    datatype: 'object'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'name', 'transaction'
+    [name, transaction] = input.getData 'name', 'transaction'
+    transaction.onerror = (err) ->
+      output.done err
+    store = transaction.objectStore name
+    transaction.onerror = null
+    output.send
+      store: store
+    output.sendDone
+      transaction: transaction
