@@ -28,7 +28,7 @@ exports.getComponent = ->
     return unless input.hasData 'store', 'name', 'keypath'
     unique = if input.hasData('unique') then input.getData('unique') else false
     multiEntry = if input.hasData('multientry') then input.getData('multientry') else false
-    [store, name, keypath] = input.getData 'store', 'name', 'keypath'
+    [store, name, keyPath] = input.getData 'store', 'name', 'keypath'
     store.onerror = (err) ->
       output.done err
     index = store.createIndex name, keyPath,
