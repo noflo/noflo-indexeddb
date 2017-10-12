@@ -7,11 +7,11 @@ exports.getComponent = ->
   c.inPorts.add 'store',
     datatype: 'object'
   c.inPorts.add 'key',
-    datatype: 'key'
+    datatype: 'string'
   c.outPorts.add 'store',
     datatype: 'object'
   c.outPorts.add 'key',
-    datatype: 'object'
+    datatype: 'string'
   c.outPorts.add 'error',
     datatype: 'object'
   c.process (input, output) ->

@@ -10,11 +10,11 @@ exports.getComponent = ->
     datatype: 'string'
   c.inPorts.add 'keypath',
     datatype: 'string'
-  c.inports.add 'unique',
+  c.inPorts.add 'unique',
     datatype: 'boolean'
     control: true
     default: false
-  c.inports.add 'multientry',
+  c.inPorts.add 'multientry',
     datatype: 'boolean'
     control: true
     default: false

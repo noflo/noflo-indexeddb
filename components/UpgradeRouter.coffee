@@ -11,7 +11,7 @@ exports.getComponent = ->
     datatype: 'object'
   c.forwardBrackets =
     upgrade: ['versions', 'missed']
-  c.process = (input, output) ->
+  c.process (input, output) ->
     return unless input.hasData 'upgrade'
     upgrade = input.getData 'upgrade'
     missed = false
