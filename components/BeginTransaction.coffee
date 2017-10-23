@@ -4,6 +4,7 @@ noflo = require 'noflo'
 
 exports.getComponent = ->
   c = new noflo.Component
+  c.description = 'Start an IndexedDB transaction'
   c.inPorts.add 'stores',
     datatype: 'string'
   c.inPorts.add 'db',

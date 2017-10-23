@@ -4,6 +4,7 @@ noflo = require 'noflo'
 
 exports.getComponent = ->
   c = new noflo.Component
+  c.description = 'Close an IndexedDB database'
   c.inPorts.add 'db',
     datatype: 'object'
   c.outPorts.add 'closed',

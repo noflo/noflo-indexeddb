@@ -4,6 +4,8 @@ noflo = require 'noflo'
 
 exports.getComponent = ->
   c = new noflo.Component
+  c.icon = 'search'
+  c.description = 'Query a store in an IndexedDB database'
   c.inPorts.add 'store',
     datatype: 'object'
   c.inPorts.add 'range',

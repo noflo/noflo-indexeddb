@@ -4,6 +4,7 @@ noflo = require 'noflo'
 
 exports.getComponent = ->
   c = new noflo.Component
+  c.description = 'Store an object into an IndexedDB store'
   c.inPorts.add 'store',
     datatype: 'object'
   c.inPorts.add 'value',

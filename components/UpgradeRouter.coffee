@@ -2,6 +2,8 @@ noflo = require 'noflo'
 
 exports.getComponent = ->
   c = new noflo.Component
+  c.icon = 'code-fork'
+  c.description = 'Route upgrades between IndexeDB database versions'
   c.inPorts.add 'upgrade',
     datatype: 'object'
   c.outPorts.add 'versions',

@@ -5,6 +5,8 @@ indexedDB = require '../vendor/IndexedDB'
 
 exports.getComponent = ->
   c = new noflo.Component
+  c.description = 'Delete an IndexedDB database'
+  c.icon = 'trash'
   c.inPorts.add 'name',
     datatype: 'string'
   c.outPorts.add 'deleted',

@@ -5,6 +5,7 @@ indexedDB = require '../vendor/IndexedDB'
 
 exports.getComponent = ->
   c = new noflo.Component
+  c.description = 'Open an IndexedDB database'
   c.inPorts.add 'name',
     datatype: 'string'
   c.inPorts.add 'version',

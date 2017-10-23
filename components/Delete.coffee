@@ -4,6 +4,8 @@ noflo = require 'noflo'
 
 exports.getComponent = ->
   c = new noflo.Component
+  c.description = 'Remove an item from an IndexedDB database'
+  c.icon = 'trash'
   c.inPorts.add 'store',
     datatype: 'object'
   c.inPorts.add 'key',
