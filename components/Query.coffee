@@ -23,9 +23,19 @@ exports.getComponent = ->
     range: ['item', 'error']
   c.process (input, output) ->
     return unless input.hasData 'store'
+    bracketed = false
     step = (e) ->
       cursor = e.target.result
-      return output.done() unless cursor
+      unless cursor
+        if bracketed
+          output.send
+            item: new noflo.IP 'closeBracket'
+        output.done()
+        return
+      unless bracketed
+        output.send
+          item: new noflo.IP 'openBracket'
+        bracketed = true
       output.send
         item: cursor.value
       cursor.continue()
