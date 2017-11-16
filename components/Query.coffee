@@ -16,6 +16,8 @@ exports.getComponent = ->
     datatype: 'all'
   c.outPorts.add 'range',
     datatype: 'object'
+  c.outPorts.add 'empty',
+    datatype: 'object'
   c.outPorts.add 'error',
     datatype: 'object'
   c.forwardBrackets =
@@ -30,6 +32,9 @@ exports.getComponent = ->
         if bracketed
           output.send
             item: new noflo.IP 'closeBracket'
+        else
+          output.send
+            empty: true
         output.done()
         return
       unless bracketed
