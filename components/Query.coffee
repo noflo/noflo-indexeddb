@@ -16,13 +16,31 @@ exports.getComponent = ->
     datatype: 'all'
   c.outPorts.add 'range',
     datatype: 'object'
+  c.outPorts.add 'empty',
+    datatype: 'object'
   c.outPorts.add 'error',
     datatype: 'object'
+  c.forwardBrackets =
+    all: ['item', 'error']
+    range: ['item', 'error']
   c.process (input, output) ->
     return unless input.hasData 'store'
+    bracketed = false
     step = (e) ->
       cursor = e.target.result
-      return output.done() unless cursor
+      unless cursor
+        if bracketed
+          output.send
+            item: new noflo.IP 'closeBracket'
+        else
+          output.send
+            empty: true
+        output.done()
+        return
+      unless bracketed
+        output.send
+          item: new noflo.IP 'openBracket'
+        bracketed = true
       output.send
         item: cursor.value
       cursor.continue()

@@ -10,6 +10,8 @@ exports.getComponent = ->
     datatype: 'all'
   c.outPorts.add 'range',
     datatype: 'object'
+  c.forwardBrackets =
+    value: ['range']
   c.process (input, output) ->
     return unless input.hasData 'value'
     value = input.getData 'value'

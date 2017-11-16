@@ -25,6 +25,8 @@ exports.getComponent = ->
     datatype: 'object'
   c.outPorts.add 'error',
     datatype: 'object'
+  c.forwardBrackets =
+    name: ['index', 'store', 'error']
   c.process (input, output) ->
     return unless input.hasData 'store', 'name', 'keypath'
     unique = if input.hasData('unique') then input.getData('unique') else false
@@ -36,7 +38,6 @@ exports.getComponent = ->
       unique: unique
       multiEntry: multiEntry
     store.onerror = null
-    output.send
-      index: index
     output.sendDone
+      index: index
       store: store

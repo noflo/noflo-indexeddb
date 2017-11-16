@@ -15,6 +15,8 @@ exports.getComponent = ->
     datatype: 'object'
   c.outPorts.add 'error',
     datatype: 'object'
+  c.forwardBrackets =
+    name: ['store', 'error']
   c.process (input, output) ->
     return unless input.hasData 'name', 'transaction'
     [name, transaction] = input.getData 'name', 'transaction'
@@ -22,7 +24,6 @@ exports.getComponent = ->
       output.done err
     store = transaction.objectStore name
     transaction.onerror = null
-    output.send
-      store: store
     output.sendDone
+      store: store
       transaction: transaction

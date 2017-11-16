@@ -22,6 +22,8 @@ exports.getComponent = ->
     datatype: 'object'
   c.outPorts.add 'error',
     datatype: 'object'
+  c.forwardBrackets =
+    name: ['store', 'error']
   c.process (input, output) ->
     return unless input.hasData 'name', 'db'
     keyPath = if input.hasData('keypath') then input.getData('keypath') else ''
@@ -35,6 +37,5 @@ exports.getComponent = ->
     db.transaction.onerror = null
     output.send
       store: store
-    output.send
       db: db
     output.done()
