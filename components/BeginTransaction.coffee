@@ -21,6 +21,8 @@ exports.getComponent = ->
     datatype: 'object'
   c.outPorts.add 'complete',
     datatype: 'bang'
+  c.forwardBrackets =
+    stores: ['transaction', 'db', 'error', 'complete']
   c.process (input, output) ->
     return unless input.hasData 'db', 'stores'
     mode = if input.hasData('mode') then input.getData('mode') else 'readwrite'

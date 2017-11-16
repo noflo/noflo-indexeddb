@@ -13,6 +13,8 @@ exports.getComponent = ->
     datatype: 'object'
   c.outPorts.add 'error',
     datatype: 'object'
+  c.forwardBrackets =
+    name: ['index', 'error']
   c.process (input, output) ->
     return unless input.hasData 'store', 'name'
     [store, name] = input.getData 'store', 'name'

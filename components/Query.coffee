@@ -18,6 +18,9 @@ exports.getComponent = ->
     datatype: 'object'
   c.outPorts.add 'error',
     datatype: 'object'
+  c.forwardBrackets =
+    all: ['item', 'error']
+    range: ['item', 'error']
   c.process (input, output) ->
     return unless input.hasData 'store'
     step = (e) ->

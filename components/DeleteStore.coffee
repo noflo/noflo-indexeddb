@@ -10,10 +10,14 @@ exports.getComponent = ->
     datatype: 'string'
   c.inPorts.add 'db',
     datatype: 'object'
+  c.outPorts.add 'deleted',
+    datatype: 'string'
   c.outPorts.add 'db',
     datatype: 'object'
   c.outPorts.add 'error',
     datatype: 'object'
+  c.forwardBrackets =
+    name: ['deleted', 'error']
   c.process (input, output) ->
     return unless input.hasData 'name', 'db'
     [name, db] = input.getData 'name', 'db'
@@ -22,4 +26,5 @@ exports.getComponent = ->
     db.deleteObjectStore name
     db.transaction.onerror = null
     output.sendDone
+      deleted: name
       db: db

@@ -16,6 +16,8 @@ exports.getComponent = ->
     datatype: 'string'
   c.outPorts.add 'error',
     datatype: 'object'
+  c.forwardBrackets =
+    key: ['key', 'error']
   c.process (input, output) ->
     return unless input.hasData 'store', 'key'
     [store, key] = input.getData 'store', 'key'
@@ -25,6 +27,5 @@ exports.getComponent = ->
     req.onsuccess = (e) ->
       output.send
         store: store
-      output.send
         key: key
       output.done()

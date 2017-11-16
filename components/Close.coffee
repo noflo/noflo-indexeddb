@@ -9,6 +9,8 @@ exports.getComponent = ->
     datatype: 'object'
   c.outPorts.add 'closed',
     datatype: 'bang'
+  c.forwardBrackets =
+    db: ['closed']
   c.process (input, output) ->
     return unless input.hasData 'db'
     db = input.getData 'db'

@@ -13,6 +13,8 @@ exports.getComponent = ->
     datatype: 'bang'
   c.outPorts.add 'error',
     datatype: 'object'
+  c.forwardBrackets =
+    name: ['deleted', 'error']
   c.process (input, output) ->
     return unless input.hasData 'name'
     name = input.getData 'name'
