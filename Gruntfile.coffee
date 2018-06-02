@@ -20,11 +20,6 @@ module.exports = ->
         files:
           'browser/noflo-indexeddb.js': ['package.json']
 
-    # Automated recompilation and testing when developing
-    watch:
-      files: ['spec/*.coffee', 'components/*.coffee']
-      tasks: ['test']
-
     # Cross-browser testing
     connect:
       server:
@@ -67,7 +62,6 @@ module.exports = ->
   @loadNpmTasks 'grunt-contrib-coffee'
 
   # Grunt plugins used for testing
-  @loadNpmTasks 'grunt-contrib-watch'
   @loadNpmTasks 'grunt-coffeelint'
 
   # Grunt plugins used for browser testing
